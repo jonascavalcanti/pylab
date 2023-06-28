@@ -1,7 +1,7 @@
 from services.db import DB
 
 
-db = DB(filnename = "./hodor.db", table = 'groups')
+db = DB(filename = "./hodor.db", table = 'groups')
 
 # m = {
 #     "id": 2211596,

@@ -10,7 +10,12 @@ class DB:
         self._db.commit()
 
     def insert(self, row):
-        self._db.execute('insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?)'.format(self._table), (row['id'], row['google_group_name'], row['github_id'], row['github_slug'], row['github_name']))
+        query = 'insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?)'
+        self._db .execute(query.format(self._table), (row['id'],
+                                                      row['google_group_name'],
+                                                      row['github_id'],
+                                                      row['github_slug'],
+                                                      row['github_name']))
         self._db.commit()
 
     @property
