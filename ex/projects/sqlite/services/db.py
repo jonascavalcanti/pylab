@@ -10,13 +10,17 @@ class DB:
         self._db.commit()
 
     def insert(self, row):
-        query = 'insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?)'
+        query = 'insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?, ?)'
         self._db .execute(query.format(self._table), (row['id'],
                                                       row['google_group_name'],
                                                       row['github_id'],
                                                       row['github_slug'],
                                                       row['github_name']))
         self._db.commit()
+
+    def retrieve(self, group_id):
+        cursor = self._db.execute('select * from {} where id = ?'.format(self.table), (group_id,))
+        return dict(cursor.fetchone())
 
     @property
     def filename(self): return self._filename
@@ -36,3 +40,4 @@ class DB:
 
     def close(self):
         self._db.close()
+        del self._filename

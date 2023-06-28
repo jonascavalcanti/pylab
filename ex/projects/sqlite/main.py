@@ -11,9 +11,9 @@ db = DB(filename = "./hodor.db", table = 'groups')
 #     "github_name": "tribe-people"
 #     }
 
-def main():
     #TODO colar essas funçoes em um outro metodo que vai cuidar das coisas do hodor
-    db.sql_do(""" CREATE TABLE IF NOT EXISTS groups (
+print('create table')
+db.sql_do("""CREATE TABLE IF NOT EXISTS groups (
                                         id varchar(3) PRIMARY KEY,
                                         google_group_name text NOT NULL,
                                         github_id interger NOT NULL,
@@ -22,11 +22,14 @@ def main():
                                     );
     """)
 
-    db.insert(dict(id = '123',
-                   google_group_name = 'francisco',
-                   github_id = '321',
-                   github_slug = 'francisco',
-                   github_name = 'francisco'))
+print('insert')
+db.insert(dict(id = 123,
+               google_group_name = 'francisco',
+               github_id = 321,
+               github_slug = 'francisco',
+               github_name = 'francisco'))
+
+print(db.retrieve(123))
     
 
 
