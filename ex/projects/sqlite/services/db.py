@@ -1,56 +1,33 @@
 import sqlite3
-import json
-from sqlite3 import Error
 
-class SQLite:
-    def __init__(self, db_file: str) -> None:
-        self.db_file = db_file
-        self.__sql_inicial_load()
-    
-    def get_connection(self):
-        """ create a database connection to the SQLite database
-        specified by db_file
-        :param db_file: database file
-        :return: Connection object or None
-        """
-        conn = None
-        try:
-            conn = sqlite3.connect(self.db_file)
-        except Error as e:
-            print(e)
+class DB:
+    def __init__(self, **kwargs):
+        self.filename = kwargs.get('filename')
+        self.table = kwargs.get('table', 'test')
 
-        return conn
-    
-    def __sql_inicial_load(self):
-        sql = """ CREATE TABLE IF NOT EXISTS groups (
-                                        id varchar(3) PRIMARY KEY,
-                                        google_workspace_name text NOT NULL,
-                                        github_id interger NOT NULL,
-                                        github_slug text NOT NULL,
-                                        github_name text NOT NULL
-                                    ); """
-        conn = self.get_connection()
-        self.__create_table(conn, sql)
-        
-    def __create_table(self, conn, sql: str):
-        """ create a table from the create_table_sql statement
-        :param conn: Connection object
-        :param sql: a CREATE TABLE statement
-        :return:
-        """
-        try:
-            cursor = conn.cursor()
-            cursor.execute(sql)
-        except Error as e:
-            print(e)
+    def sql_do(self, sql, *params):
+        self._db.execute(sql, params)
+        self._db.commit()
 
-    def insert(self, conn, table: str, data: map):
-        sql = "INSERT INTO " + table + " VALUES (?, ?)"
+    def insert(self, row):
+        self._db.execute('insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?)'.format(self._table), (row['id'], row['google_group_name'], row['github_id'], row['github_slug'], row['github_name']))
+        self._db.commit()
 
-        try:
-            cursor = conn.cursor()
-            cursor.execute(sql, [data['id'], json.dumps(data)])
-            conn.commit()
-        except Error as e:
-            print(e)
-            
+    @property
+    def filename(self): return self._filename
+    @filename.setter
+    def filename(self, fn):
+        self._filename = fn
+        self._db = sqlite3.connect(fn)
+        self._db.row_factory = sqlite3.Row
+    @filename.deleter
+    def filename(self): self.close()
+    @property
+    def table(self): return self._table
+    @table.setter
+    def table(self, t): self._table = t
+    @table.deleter
+    def table(self): self._table = 'test'
+
+    def close(self):
+        self._db.close()
