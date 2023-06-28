@@ -1,6 +1,9 @@
 import sqlite3
 
 class DB:
+    #TODO crate a error handler function 
+    #TODO Add logs
+
     def __init__(self, **kwargs):
         self.filename = kwargs.get('filename')
         self.table = kwargs.get('table', 'test')
@@ -21,6 +24,21 @@ class DB:
     def retrieve(self, group_id):
         cursor = self._db.execute('select * from {} where id = ?'.format(self.table), (group_id,))
         return dict(cursor.fetchone())
+
+    def update(self, row):
+        query = 'update {} set google_group_name = ?, github_id = ?, github_slug = ?, github_name = ? where id = ?'
+        self._db.execute(query.format(self._table), (row['google_group_name'],
+                                                     row['github_id'],
+                                                     row['github_slug'],
+                                                     row['github_name'],
+                                                     row['id']))
+        self._db.commit()
+
+    def delete(self, group_id):
+        query = 'delete from {} where id = ?'
+        self._db.execute(query.format(self._table), (group_id))
+        self._db.commit()
+
 
     @property
     def filename(self): return self._filename
