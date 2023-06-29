@@ -54,13 +54,16 @@ class DB:
 
     @property
     def filename(self): return self._filename
+
     @filename.setter
     def filename(self, fn):
         self._filename = fn
         self._db = sqlite3.connect(fn)
         self._db.row_factory = sqlite3.Row
+
     @filename.deleter
     def filename(self): self.close()
+
     @property
     def table(self): return self._table
     @table.setter
