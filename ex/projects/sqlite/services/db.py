@@ -1,8 +1,10 @@
 import sqlite3
 
+
 class DB:
-    #TODO crate a error handler function 
-    #TODO Add logs
+
+    # TODO crate a error handler function 
+    # TODO Add logs
 
     def __init__(self, **kwargs):
         self.filename = kwargs.get('filename')
@@ -39,16 +41,18 @@ class DB:
         self._db.execute(query.format(self._table), (group_id))
         self._db.commit()
 
-
     @property
     def filename(self): return self._filename
+
     @filename.setter
     def filename(self, fn):
         self._filename = fn
         self._db = sqlite3.connect(fn)
         self._db.row_factory = sqlite3.Row
+
     @filename.deleter
     def filename(self): self.close()
+
     @property
     def table(self): return self._table
     @table.setter
