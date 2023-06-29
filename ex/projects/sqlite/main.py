@@ -21,13 +21,14 @@ db.sql_do("""CREATE TABLE IF NOT EXISTS groups (
                                     );
     """)
 
+# #TODO verificar se já existe antes de executar isso
 db.insert(dict(id = 123,
                google_group_name = 'francisco',
                github_id = 321,
                github_slug = 'francisco',
                github_name = 'francisco'))
 
-print('actual', db.retrieve(123))
+print('after insert', db.retrieve(123))
 
 print('after update', db.update(dict(id = 123,
                google_group_name = 'jonas o mestre dos magos',
@@ -35,7 +36,7 @@ print('after update', db.update(dict(id = 123,
                github_slug = 'jonas_o_mestre_dos_magos',
                github_name = 'jonas o mestre dos magos')))
 
-print('actual', db.retrieve(123))
+print('after update', db.retrieve(123))
     
 
 
