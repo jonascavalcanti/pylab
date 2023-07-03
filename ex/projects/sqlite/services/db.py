@@ -37,8 +37,8 @@ class DB:
         return dict(cursor.fetchone())
 
     def __exec(self, sql, *params):
-        #for write and custom commands
-        #TODO mult arity/overload
+        # for write and custom commands
+        # TODO mult arity/overload
         try:
             self._db.execute(sql, params)
             self._db.commit()
@@ -47,7 +47,7 @@ class DB:
         
 
     def __iter__(self):
-        #method ref https://peps.python.org/pep-0234/
+        # method ref https://peps.python.org/pep-0234/
         query = 'select * from {} order by google_group_name'
         cursor = self._db.execute(query.format(self._table))
         for row in cursor:
