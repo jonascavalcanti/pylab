@@ -22,7 +22,7 @@ class DB:
             self.groups_table = Table(
                 'groups',
                 self.metadata,
-                Column('id', Integer, primary_key=True),
+                Column('id', String, primary_key=True),
                 Column('google_group_name', String, nullable=False),
                 Column('github_id', Integer, nullable=False),
                 Column('github_slug', String, nullable=False),
@@ -96,7 +96,7 @@ class DB:
     def retrieve(self, group_id):
         try:
             query = self.groups_table.select().where(
-                self.groups_table.c.id == group_id
+                self.groups_table.columns.id == group_id
             )
             result = self.session.execute(query)
             record = result.fetchone()

@@ -5,7 +5,7 @@ import sys
 
 groups = [
     {
-        "id": 123,
+        "id": "025b2l0r4fnu38p",
         "email": "trab",
         "name": "trab",
         "description": "trab",
@@ -21,7 +21,7 @@ groups = [
         ]
     },
     {
-        "id": 456,
+        "id": "026c2l0r4fnu40p",
         "email": "fon",
         "name": "fon",
         "description": "fon",
@@ -73,17 +73,17 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     ag = Agregator()
-    ag.import_data(teams, groups, )
-    print(ag.receive(456))
+    ag.import_data(teams, groups)
+    print(ag.receive("025b2l0r4fnu38p"))
 
-    # db = DB(filename='hodor.db')
-    # db.insert({'id': 1, 'google_group_name': 'group1', 'github_id': 1, 'github_slug': 'slug1', 'github_name': 'name1'})
-    # db.insert({'id': 2, 'google_group_name': 'group2', 'github_id': 2, 'github_slug': 'slug2', 'github_name': 'name2'})
-    # db.update({'id': 1, 'google_group_name': 'group3', 'github_id': 3, 'github_slug': 'slug3', 'github_name': 'name3'})
-    # db.update({'id': 3, 'google_group_name': 'group4', 'github_id': 4, 'github_slug': 'slug4', 'github_name': 'name4'})
+    db = DB(filename='hodor.db')
+    db.insert({'id': "dasdad433", 'google_group_name': 'group1', 'github_id': 1, 'github_slug': 'slug1', 'github_name': 'name1'})
+    db.insert({'id': "dasdad433", 'google_group_name': 'group2', 'github_id': 2, 'github_slug': 'slug2', 'github_name': 'name2'})
+    db.update({'id': "2318dasda", 'google_group_name': 'group3', 'github_id': 3, 'github_slug': 'slug3', 'github_name': 'name3'})
+    db.update({'id': "123dsaref", 'google_group_name': 'group4', 'github_id': 4, 'github_slug': 'slug4', 'github_name': 'name4'})
 
-    # for group in db:
-    #     print(group)
+    for group in db:
+        print(group)
 
 
 if __name__ == '__main__':
