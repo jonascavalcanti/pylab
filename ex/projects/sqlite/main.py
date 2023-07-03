@@ -1,6 +1,7 @@
 from services.db import DB
 import sys
 
+
 def main():
 
     db = DB(filename="./hodor.db", table='groups')
@@ -14,11 +15,11 @@ def main():
                                         );
         """)
 
-    db.insert(dict(id = 123,
-                google_group_name='francisco',
+    db.insert(dict(id=123,
+                google_group_name="francisco",
                 github_id=321,
-                github_slug='francisco',
-                github_name='francisco'))
+                github_slug="francisco",
+                github_name="francisco"))
 
     print('actual', db.retrieve(123))
 

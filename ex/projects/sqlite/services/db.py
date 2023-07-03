@@ -2,6 +2,7 @@ import sqlite3
 from inspect import stack
 from loguru import logger
 
+
 class DB:
 
     def __init__(self, **kwargs):
@@ -14,10 +15,10 @@ class DB:
     def insert(self, row):
         query = 'insert into {} (id, google_group_name, github_id, github_slug, github_name) values (?, ?, ?, ?, ?)'
         self.__exec(query.format(self._table), *(row['id'],
-                                                          row['google_group_name'],
-                                                          row['github_id'],
-                                                          row['github_slug'],
-                                                          row['github_name']))
+                                                row['google_group_name'],
+                                                row['github_id'],
+                                                row['github_slug'],
+                                                row['github_name']))
 
     def update(self, row):
         query = 'update {} set google_group_name = ?, github_id = ?, github_slug = ?, github_name = ? where id = ?'
