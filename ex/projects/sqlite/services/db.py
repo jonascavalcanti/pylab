@@ -45,7 +45,6 @@ class DB:
         except sqlite3.IntegrityError as e:
             logger.exception("Error occurred during the operation of {}: {}".format(stack()[1], e))
         
-
     def __iter__(self):
         # method ref https://peps.python.org/pep-0234/
         query = 'select * from {} order by google_group_name'
