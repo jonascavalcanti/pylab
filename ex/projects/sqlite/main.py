@@ -1,47 +1,71 @@
-# from services.db import DB
 from services.google import Google
+from services.agregator import Agregator
+from shared import Env
+import logging
 import sys
 import json
 
+teams = [
+    {
+        "id": 1,
+        "node_id": "MDQ6VGVhbTE=",
+        "url": "https://api.github.com/teams/1",
+        "html_url": "https://github.com/orgs/github/teams/justice-league",
+        "name": "trab",
+        "slug": "trab",
+        "description": "A great team.",
+        "privacy": "closed",
+        "notification_setting": "notifications_enabled",
+        "permission": "admin",
+        "members_url": "https://api.github.com/teams/1/members{/member}",
+        "repositories_url": "https://api.github.com/teams/1/repos",
+    },
+    {
+        "id": 2,
+        "node_id": "MDQ6VGVhbTE=",
+        "url": "https://api.github.com/teams/1",
+        "html_url": "https://github.com/orgs/github/teams/justice-league",
+        "name": "fon",
+        "slug": "fon",
+        "description": "A great team.",
+        "privacy": "closed",
+        "notification_setting": "notifications_enabled",
+        "permission": "admin",
+        "members_url": "https://api.github.com/teams/1/members{/member}",
+        "repositories_url": "https://api.github.com/teams/1/repos",
+    }
+]
+
 
 def main():
+    logging.basicConfig(level=logging.INFO)
 
-    # db = DB(filename="./hodor.db", table='groups')
-    # # TODO colar essas funçoes em um outro metodo que vai cuidar das coisas do hodor
-    # db.sql_do("""CREATE TABLE IF NOT EXISTS groups (
-    #                                         id varchar(3) PRIMARY KEY,
-    #                                         google_group_name text NOT NULL,
-    #                                         github_id interger NOT NULL,
-    #                                         github_slug text NOT NULL,
-    #                                         github_name text NOT NULL
-    #                                     );
-    #     """)
-
-    # db.insert(dict(id=123,
-    #             google_group_name="francisco",
-    #             github_id=321,
-    #             github_slug="francisco",
-    #             github_name="francisco"))
-
-    # print('actual', db.retrieve(123))
-
-    # db.update(dict(id=123,
-    #                google_group_name='jonas o mestre dos magos',
-    #                github_id=321,
-    #                github_slug='jonas_o_mestre_dos_magos',
-    #                github_name='jonas o mestre dos magos'))
-
-    # print('after update', db.retrieve(123))
-    g = Google(credentials='./artifacts/credentials.json')
+    g = Google(credentials=Env.SA_CRED_INFO)
 
     service = g.search_directory("groups")
 
     resp = service.list(
-            customer='C0200iw23'
+            customer=Env.CUSTOMER_ID
         ).execute()
 
-    print(json.dumps(resp))
+    groups = json.loads(json.dumps(resp["groups"]))
+    # for gw in groups:
+    #     print(gw["name"])
+    #print(groups)
+
+    ag = Agregator()
+    ag.import_data(teams, groups, )
+    print(ag.receive(456))
+
+    # db = DB(filename='hodor.db')
+    # db.insert({'id': 1, 'google_group_name': 'group1', 'github_id': 1, 'github_slug': 'slug1', 'github_name': 'name1'})
+    # db.insert({'id': 2, 'google_group_name': 'group2', 'github_id': 2, 'github_slug': 'slug2', 'github_name': 'name2'})
+    # db.update({'id': 1, 'google_group_name': 'group3', 'github_id': 3, 'github_slug': 'slug3', 'github_name': 'name3'})
+    # db.update({'id': 3, 'google_group_name': 'group4', 'github_id': 4, 'github_slug': 'slug4', 'github_name': 'name4'})
+
+    # for group in db:
+    #     print(group)
 
 
 if __name__ == '__main__':
-    sys.exit(main())  # next section explains the use of sys.exit
+    sys.exit(main())
