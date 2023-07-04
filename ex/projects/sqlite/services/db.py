@@ -113,7 +113,7 @@ class DB:
     def __iter__(self):
         try:
             query = self.groups_table.select().order_by(
-                self.groups_table.c.google_group_name
+                self.groups_table.columns.google_group_name
             )
             result = self.session.execute(query)
             for record in result:

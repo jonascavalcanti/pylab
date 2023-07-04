@@ -15,22 +15,19 @@ def main():
     resp = service.list(
             customer=Env.CUSTOMER_ID
         ).execute()
-    json_groups = json.dumps(resp["groups"])
-    groups = json.loads(json_groups)
+    get_groups = resp["groups"]
 
-    #for group in groups:
-    #     print(group["name"])
     
     gh = Github()
-    json_teams = json.dumps(gh.get(path=f"/orgs/{Env.GH_ORG}/teams"))
-    teams = json.loads(json_teams)
+    get_tems = gh.get(path=f"/orgs/{Env.GH_ORG}/teams")
 
-    # for team in teams:
-    #     print(team["name"])
+
+    # print("google groups", groups)
+    # print("github teams", teams)
 
     ag = Agregator()
-    ag.import_data(teams, groups)
-    print(ag.receive("025b2l0r4fnu38p"))
+    ag.import_data(get_tems, get_groups)
+    print(ag.receive("048pi1tg4f82ygq"))
 
     # db = DB(filename='hodor.db')
     # db.insert({'id': "dasdad433", 'google_group_name': 'group1', 'github_id': 1, 'github_slug': 'slug1', 'github_name': 'name1'})

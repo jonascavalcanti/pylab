@@ -2,7 +2,7 @@ from services.db import DB
 
 class Agregator:
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         #variables
         # self.gh_groups = kwargs.get('github_groups')
         # self.g_groups = kwargs.get('google_groups')
@@ -18,7 +18,7 @@ class Agregator:
                                     'google_group_name': google["name"],
                                     'github_id': github["id"],
                                     'github_slug': github["slug"],
-                                    'github_name': github["id"]})
+                                    'github_name': github["name"]})
                     continue
 
     def receive(self, id):
