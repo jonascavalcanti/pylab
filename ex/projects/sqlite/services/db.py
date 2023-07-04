@@ -30,6 +30,7 @@ class DB:
             )
             self.groups_table.create(self.engine)
             logging.info('Table "groups" successfully created..')
+            return self.groups_table
         else:
             self.groups_table = Table('groups', self.metadata, autoload_with=self.engine)
             logging.info('Table "groups" already exists. Using existing table..')
