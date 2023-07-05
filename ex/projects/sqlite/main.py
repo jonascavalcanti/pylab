@@ -4,7 +4,6 @@ from services.github import Github
 from shared import Env
 import logging
 import sys
-import json
 
 
 def main():
@@ -12,21 +11,22 @@ def main():
 
     gw = Google(credentials=Env.SA_CRED_INFO)
     service = gw.search_directory("groups")
-    resp = service.list(
-            customer=Env.CUSTOMER_ID
-        ).execute()
-    get_groups = resp["groups"]
-
+    groups = gw.get_groups(service=service)
+    
+    # for group in groups:
+    #     print(group["name"])
     
     gh = Github()
-    get_tems = gh.get(path=f"/orgs/{Env.GH_ORG}/teams")
-
-
+    teams = gh.list_teams(root_team=Env.GH_ROOT_TEAM)
+    
+    # for team in teams:
+    #     print(team["name"])
+   
     # print("google groups", groups)
     # print("github teams", teams)
 
     ag = Agregator()
-    ag.import_data(get_tems, get_groups)
+    ag.import_data(teams, groups)
     print(ag.receive("048pi1tg4f82ygq"))
 
     # db = DB(filename='hodor.db')

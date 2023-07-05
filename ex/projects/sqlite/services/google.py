@@ -1,5 +1,5 @@
 
-import os.path
+from typing import List, Any
 import json
 from shared import Env
 from google.oauth2 import service_account
@@ -27,9 +27,10 @@ class Google:
         try:
     
             creds = service_account.Credentials.from_service_account_info(
-                                                    info=json.loads(self.__credentials),
-                                                    scopes=scopes,
-                                                    subject=Env.SA_SUBJECT)
+                                        info=json.loads(self.__credentials),
+                                        scopes=scopes,
+                                        subject=Env.SA_SUBJECT
+                                        )
             
             svc = build('admin', 'directory_v1', credentials=creds)
             
@@ -43,4 +44,27 @@ class Google:
             return action[service_name]
         except HttpError as err:
             print(err)
-         
+ 
+    def get_groups(self, service=None, token=None) -> List[Any]:
+        """List all groups
+
+        :param token:
+            Google Workspace next page token
+
+        :return list:
+            Return list with all users
+        """
+        resp = service.list(
+            customer=Env.CUSTOMER_ID,
+            pageToken=token
+        ).execute()
+
+        # get only users with customSchemas
+        groups = [g for g in resp.get('groups', [])]
+    
+        # get next page
+        if resp.get('nextPageToken') is not None:
+            groups += self.get_groups(service=service,
+                                      token=resp.get('nextPageToken'))
+
+        return groups
