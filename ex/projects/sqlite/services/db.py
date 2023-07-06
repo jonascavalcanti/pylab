@@ -95,10 +95,16 @@ class DB:
             self.session.rollback()
             raise
 
+    def __columm_type(self, group_id):
+        if isinstance(group_id, str):
+            return self.groups_table.columns.id
+        else:
+            return self.groups_table.columns.github_id
+
     def retrieve(self, group_id) -> Optional[dict[str, Any]]:
         try:
             query = self.groups_table.select().where(
-                self.groups_table.columns.id == group_id
+                self.__columm_type(group_id) == group_id
             )
             result = self.session.execute(query)
             record = result.fetchone()

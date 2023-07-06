@@ -137,23 +137,12 @@ class Sync():
         logger.info(f"{self.__client.logkey}in-sync={count['in-sync']:,}")
         logger.info(f"{self.__client.logkey}removed={count['removed']:,}")
 
-    def __normalizer_from_db(self):
-        for google_groups in self.__sync_data.gws_groups:
-            db_group = self.__db.retrieve(group_id=google_groups.id)
-            for github_groups in self.__sync_data.gh_groups:
-                if github_groups.id == db_group['github_id']:
-                    return github_groups
-                break
-            
-
     def __sync_from_gh(self, group):
         try:
             googl_work_space_group = next((g for g in self.__sync_data.gws_groups if g.name == group.name), None)
-            #cria a proxima variavel com base na existencia do nome do group + os ados normalizados no sync_data
-            
+            group_in_persistence = self.__db.retrieve(group.id)
 
-            if googl_work_space_group is None:
-                #se o resultado for da proxima variavel for node deleta o grupo
+            if googl_work_space_group is None and group_in_persistence is None:
                 self.__github_groups.remove(group)
                 group.sync_action = SyncAction.REMOVED
             else:

@@ -11,7 +11,7 @@ def main():
 
     ag = Agregator()
     # ag.import_data()
-    print(ag.receive("048pi1tg0hrm0xj")['id'])
+    print(ag.receive(7301093))
 
     #usage db exemples
     # db = DB(filename='hodor.db')
