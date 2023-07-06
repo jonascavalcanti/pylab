@@ -52,6 +52,15 @@ class Github(ClientApi):
                 return None
             raise
 
+    
+    def get_by_team_id(self, team_id: str):
+        try:
+            return self.get(path=f"/organizations/{Env.GH_ORG_ID}/teams/{team_id}")
+        except Exception as ex:
+            if "HTTP 404/" in str(ex):
+                return None
+            raise
+
     def create(self, group):
         if Env.DRY_RUN:
             return

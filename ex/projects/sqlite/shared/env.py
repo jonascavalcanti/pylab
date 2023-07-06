@@ -19,6 +19,7 @@ class Env:
     GH_ROOT_TEAM = os.getenv('GH_ROOT_TEAM', '')
     GH_ROOT_CUSTOM_TEAM = os.getenv('GH_ROOT_CUSTOM_TEAM', '')
     GH_ORG = os.getenv('GH_ORG', '')
+    GH_ORG_ID = os.getenv('GH_ORG_ID', '')
 
     # GWS
     CUSTOMER_ID = os.getenv('CUSTOMER_ID', '')
