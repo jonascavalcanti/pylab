@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, inspect, Column, Integer, String, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.schema import MetaData, Column
 from sqlalchemy.exc import SQLAlchemyError
+from typing import Optional, Dict, Any
 
 class DB:
     def __init__(self, **kwargs):
@@ -94,7 +95,7 @@ class DB:
             self.session.rollback()
             raise
 
-    def retrieve(self, group_id):
+    def retrieve(self, group_id) -> Optional[dict[str, Any]]:
         try:
             query = self.groups_table.select().where(
                 self.groups_table.columns.id == group_id

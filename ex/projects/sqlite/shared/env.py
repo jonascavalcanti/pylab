@@ -29,6 +29,9 @@ class Env:
     SLACK_TOKEN = os.getenv('SLACK_TOKEN', '')
     SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET', '')
 
+    # Machine
+    MAX_WORKERS = os.getenv('MAX_WORKERS', 1)
+
     @staticmethod
     def validate_envs(env_names):
         errors = [n for n in env_names if len(getattr(Env, n)) == 0]

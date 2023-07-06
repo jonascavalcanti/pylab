@@ -1,6 +1,8 @@
 from shared.clientapi import ClientApi
+from .syncdata import SyncData 
 from shared import Env
 
+import json
 
 class Github(ClientApi):
 
@@ -14,6 +16,10 @@ class Github(ClientApi):
                 {'Authorization': f"Bearer {Env.API_GH_SECRET}"}
             )
 
+        self.__sync_data = SyncData()
+        self.__client = ClientApi
+        self.__gh_org = Env.GH_ORG
+        
     def list_teams(self, root_team=None, page=1, teams=None):
         if teams is None:
             teams = []
@@ -45,3 +51,33 @@ class Github(ClientApi):
             if "HTTP 404/" in str(ex):
                 return None
             raise
+
+    def create(self, group):
+        if Env.DRY_RUN:
+            return
+        self.__client.post(path=f"/orgs/{self.__gh_org}/teams", data=json.dumps(
+            {
+                "name": group.name,
+                "privacy": "closed",
+                "parent_team_id":
+                    self.__sync_data.root_gh_team_id if group.pattern_verified
+                    else self.__sync_data.root_custom_gh_team_id
+             }))
+
+    def patch_parent_team(self, team_id, team):
+        if Env.DRY_RUN:
+            return
+        self.patch(path=f"/orgs/{self.__gh_org}/team/{team_id}", data=json.dumps(
+            {"parent_team_id": self.__sync_data.root_gh_team_id if team.pattern_verified
+                else self.__sync_data.root_custom_gh_team_id}))
+
+    def update_team(self, team_id, changes: dict):
+        if Env.DRY_RUN:
+            return
+        self.patch(path=f"/orgs/{self.__gh_org}/team/{team_id}", data=json.dumps(
+            changes))
+
+    def remove(self, group):
+        if Env.DRY_RUN:
+            return
+        self.delete(path=f"/orgs/{self.__gh_org}/teams/{group.name}")
