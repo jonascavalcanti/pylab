@@ -1,17 +1,17 @@
-from services.google import Google
 from services.agregator import Agregator
-from services.github import Github
-from shared import Env
 import logging
 import sys
+from shared.clientapi import ClientApi
+from services.sync import Sync
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
 
-    ag = Agregator()
-    # ag.import_data()
-    print(ag.receive(7301093))
+    # ag = Agregator()
+    # ag.fon()
+    # # ag.import_data()
+    # print(ag.receive(7301093))
 
     #usage db exemples
     # db = DB(filename='hodor.db')
@@ -20,6 +20,12 @@ def main():
 
     # for group in db:
     #     print(group)
+
+    
+
+    sync = Sync()
+    sync.sync('github-users@unico.io')
+
 
 
 if __name__ == '__main__':

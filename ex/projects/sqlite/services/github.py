@@ -1,3 +1,4 @@
+from typing import Optional
 from shared.clientapi import ClientApi
 from .syncdata import SyncData 
 from shared import Env
@@ -20,31 +21,46 @@ class Github(ClientApi):
         self.__client = ClientApi
         self.__gh_org = Env.GH_ORG
         
-    def list_teams(self, root_team=None, page=1, teams=None):
+    # def list_teams(self, root_team=None, page=1, teams=None):
+    #     if teams is None:
+    #         teams = []
+    
+    #     url_path = f"/orgs/{Env.GH_ORG}/teams"
+
+    #     if root_team is not None:
+    #         root_team_id = self.get_by_team_name(root_team)["id"]
+    #         url_path = f"/orgs/{Env.GH_ORG}/team/{root_team_id}/teams"
+        
+    #     current_page_teams = self.get(
+    #             path=url_path,
+    #             params={"per_page": 100, "page": page})
+        
+    #     if len(current_page_teams) > 0:
+    #         teams.extend(current_page_teams)
+    #         page += 1
+    #         if root_team is not None:
+    #             return self.list_teams(root_team, page, teams)
+    #         else:
+    #             return self.list_teams(None, page, teams)
+    #     else:
+    #         return teams
+        
+    def list_teams(self, root_team_id: str, page=1, teams=None):
         if teams is None:
             teams = []
-    
-        url_path = f"/orgs/{Env.GH_ORG}/teams"
 
-        if root_team is not None:
-            root_team_id = self.get_by_team_name(root_team)["id"]
-            url_path = f"/orgs/{Env.GH_ORG}/team/{root_team_id}/teams"
-        
         current_page_teams = self.get(
-                path=url_path,
-                params={"per_page": 100, "page": page})
-        
+            path=f"/orgs/{self.__gh_org}/team/{root_team_id}/teams",
+            params={"per_page": 100, "page": page})
+
         if len(current_page_teams) > 0:
             teams.extend(current_page_teams)
             page += 1
-            if root_team is not None:
-                return self.list_teams(root_team, page, teams)
-            else:
-                return self.list_teams(None, page, teams)
+            return self.list_teams(root_team_id, page, teams)
         else:
             return teams
 
-    def get_by_team_name(self, team_name: str):
+    def get_by_team_name(self, team_name: str) -> Optional[dict]:
         try:
             return self.get(path=f"/orgs/{Env.GH_ORG}/teams/{team_name}")
         except Exception as ex:
@@ -64,14 +80,14 @@ class Github(ClientApi):
     def create(self, group):
         if Env.DRY_RUN:
             return
-        self.__client.post(path=f"/orgs/{self.__gh_org}/teams", data=json.dumps(
+        return self.__client.post(path=f"/orgs/{self.__gh_org}/teams", data=json.dumps(
             {
                 "name": group.name,
                 "privacy": "closed",
                 "parent_team_id":
-                    self.__sync_data.root_gh_team_id if group.pattern_verified
+                self.__sync_data.root_gh_team_id if group.pattern_verified
                     else self.__sync_data.root_custom_gh_team_id
-             }))
+            }))
 
     def patch_parent_team(self, team_id, team):
         if Env.DRY_RUN:

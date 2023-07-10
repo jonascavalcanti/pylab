@@ -34,4 +34,7 @@ class Agregator:
     def receive(self, id):
         return self.db.retrieve(id)
 
+    def fon(self):
+        print(self.groups)
+
 

@@ -101,7 +101,7 @@ class DB:
         else:
             return self.groups_table.columns.github_id
 
-    def retrieve(self, group_id) -> Optional[dict[str, Any]]:
+    def retrieve(self, group_id) -> Optional[Dict[str, Any]]:
         try:
             query = self.groups_table.select().where(
                 self.__columm_type(group_id) == group_id

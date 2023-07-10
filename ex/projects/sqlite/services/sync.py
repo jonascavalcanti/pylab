@@ -1,3 +1,4 @@
+from googleapiclient.discovery import google
 from .github import Github
 from .group import Group
 from .google import Google
@@ -20,9 +21,8 @@ class SyncData:
         self.gh_legacy_inactive_users = []
 
 class Sync():
-    def __init__(self, client: Client):
+    def __init__(self):
         self.__sync_data = SyncData()
-        self.__client = client
         self.__github_groups = Github()
         self.__db = DB(filename="hodor.db")
 
@@ -35,8 +35,8 @@ class Sync():
 
         self.__sync_data.gws_groups = Group.from_gws_groups(gws_groups)
 
-        self.__sync_data.root_gh_team_id = self.__github_groups.get(Env.GH_ROOT_TEAM)["id"]
-        self.__sync_data.root_custom_gh_team_id = self.__github_groups.get(Env.GH_ROOT_CUSTOM_TEAM)["id"]
+        self.__sync_data.root_gh_team_id = "5021970" #self.__github_groups.get_by_team_name(Env.GH_ROOT_TEAM)["id"]
+        self.__sync_data.root_custom_gh_team_id = self.__github_groups.get_by_team_name(Env.GH_ROOT_CUSTOM_TEAM)["id"]
 
         gh_groups = self.__github_groups.list_teams(self.__sync_data.root_gh_team_id)
 
@@ -99,12 +99,21 @@ class Sync():
             if gh_group is None and group_in_persistence is None:
                 gh_group_out_of_root = self.__github_groups.get_by_team_id(group.id)
                 if gh_group_out_of_root is None:
-                    self.__github_groups.create(group)
+                    new_github_team = self.__github_groups.create(group)['body'] #TODO CHECK BODY
+                    self.__db.insert({'id': group.id,
+                                      'google_group_name': group.name,
+                                      'github_id': new_github_team["id"],
+                                      'github_slug': new_github_team["slug"],
+                                      'github_name': new_github_team['name']})
                     group.sync_action = SyncAction.CREATED
                 else:
                     self.__github_groups.patch_parent_team(gh_group_out_of_root["id"], group)
                     group.sync_action = SyncAction.PATCHED
-                    #TODO UPDATE DO BANCO AQUI?
+                    self.__db.update({'id': group.id,
+                                      'google_group_name': group.name,
+                                      'github_id': gh_group.id,
+                                      'github_name': gh_group.name,
+                                      'github_slug': gh_group.name})
             else:
                 group.sync_action = SyncAction.INSYNC
 
@@ -147,12 +156,17 @@ class Sync():
             group_in_persistence = self.__db.retrieve(group.id)
 
             if googl_work_space_group is None and group_in_persistence is None:
-                self.__github_groups.remove(group)
+                # self.__github_groups.remove(group)
                 group.sync_action = SyncAction.REMOVED
             else:
+                #outra condiçao caso exista na base é um update se nao existir insert
                 #verificar se esse sync acontece mesmo
                 group.sync_action = SyncAction.INSYNC
-                # self.__db.update() TODO DEVO FAZER UPDATE AQUI DO BANCO?
+                self.__db.update({'id': googl_work_space_group.id,
+                                  'google_group_name': googl_work_space_group.name,
+                                  'github_id': group.id,
+                                  'github_name': group.name,
+                                  'github_slug': group.name})
 
             logger.log("DEBUG" if group.sync_action == SyncAction.INSYNC else "INFO",
                 # f"{self.__client.logkey}"
