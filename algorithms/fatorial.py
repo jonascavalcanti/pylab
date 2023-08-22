@@ -8,8 +8,8 @@ def fatorial(n):
 
 
 def main():
-    n = 3
-    fatorial(n)
+    n = 5
+    print(fatorial(n))
 
 
 if __name__ == '__main__':
