@@ -4,6 +4,7 @@ from services.github import Github
 from services.google import Google
 from shared import Env
 
+
 class Agregator:
 
     def __init__(self):
