@@ -1,9 +1,16 @@
 
 import sys
-
+import argparse
 
 def main():
-    number = 144
+
+    parser= argparse.ArgumentParser()
+    parser.add_argument('number', type=int)
+    args = parser.parse_args()
+
+
+    
+    number = args.number
     if is_prime(number):
         print(number, "is a Prime Number")
     else:
